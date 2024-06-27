@@ -37,7 +37,8 @@ public class MessageController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<?> sendMessage(@RequestBody MessageDTO messageDTO) {
+    public ResponseEntity<?> sendMessage(@RequestBody MessageDTO messageDTO/*,@RequestHeader("Authorization") String authHeader*/) {
+        // Integer sid = userMapper.getUidByUsername(JWTUtil.parseJWT(authHeader.substring(7)));
         Integer sid = userMapper.getUidByUsername(messageDTO.getSender());
         Integer rid = userMapper.getUidByUsername(messageDTO.getReceiver());
         Message message = new Message(null, sid, rid, messageDTO.getContent(), null, 1);
@@ -45,7 +46,7 @@ public class MessageController {
             LoggerFactory.getLogger(this.getClass()).info(STR."Message sent from \{messageDTO.getSender()} to \{messageDTO.getReceiver()}");
             return ResponseEntity.ok("Message sent");
         } else {
-            LoggerFactory.getLogger(this.getClass()).info(STR."Message failed");
+            LoggerFactory.getLogger(this.getClass()).info("Message failed");
             return ResponseEntity.ok("Message failed");
         }
     }

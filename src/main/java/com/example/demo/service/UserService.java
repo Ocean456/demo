@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.demo.dto.LoginFormDTO;
-import com.example.demo.dto.UserInfoDTO;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.util.HashUtil;
@@ -38,8 +37,4 @@ public class UserService {
         return false;
     }
 
-
-    public boolean completeUserInfo(UserInfoDTO userInfoDTO) {
-        return false;
-    }
 }

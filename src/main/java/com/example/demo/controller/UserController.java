@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.LoginFormDTO;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.mapper.UserInfoMapper;
+import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JWTUtil;
 import com.example.demo.util.RedisUtil;
@@ -19,6 +21,12 @@ public class UserController {
 
     @Resource
     UserService userService;
+
+    @Resource
+    UserInfoMapper userInfoMapper;
+
+    @Resource
+    UserMapper userMapper;
 
     @Resource
     RedisUtil redisUtil;
@@ -39,12 +47,16 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody LoginFormDTO loginForm) {
         if (userService.userRegister(loginForm)) {
-            return ResponseEntity.ok().body("Register success");
+            int uid = userMapper.getUidByUsername(loginForm.username);
+            if (userInfoMapper.initializeUserInfo(uid)) {
+                return ResponseEntity.ok().body("Register success");
+            }
+            return ResponseEntity.badRequest().body("Register failed + Initialize failed");
+
         } else {
             return ResponseEntity.badRequest().body("Register failed");
         }
     }
-
 
 
 }
