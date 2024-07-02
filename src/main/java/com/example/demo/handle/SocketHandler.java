@@ -1,6 +1,8 @@
 package com.example.demo.handle;
 
+import com.example.demo.dto.MessageDTO;
 import com.example.demo.util.JWTUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -76,13 +78,15 @@ public class SocketHandler extends TextWebSocketHandler {
         logger.error(STR."Error in session: \{session.getId()}");
     }
 
-    public static void sendMessageToUser(String receiver, String content) {
-        WebSocketSession receiverSession = sessionMap.get(receiver);
+    public static void sendMessageToUser(MessageDTO messageDTO) {
+        WebSocketSession receiverSession = sessionMap.get(messageDTO.getReceiver());
         if (receiverSession != null && receiverSession.isOpen()) {
             try {
-                receiverSession.sendMessage(new TextMessage(content));
+                ObjectMapper mapper = new ObjectMapper();
+                String message = mapper.writeValueAsString(messageDTO);
+                receiverSession.sendMessage(new TextMessage(message));
             } catch (Exception e) {
-                logger.error(STR."Error in sending message to receiver: \{receiver}");
+                logger.error(STR."Error in sending message to receiver: \{messageDTO.receiver}");
             }
         }
     }

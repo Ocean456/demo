@@ -7,11 +7,8 @@ import com.example.demo.mapper.MessageMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.util.JWTUtil;
 import jakarta.annotation.Resource;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/message")
@@ -29,11 +26,11 @@ public class MessageController {
 
     @GetMapping("/personal")
     public ResponseEntity<?> getMessage(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        String username = JWTUtil.parseJWT(token);
-        LoggerFactory.getLogger(this.getClass()).info(STR."User \{username} requested messages");
-        List<MessageDTO> messages = messageMapper.getPersonalMessage(username);
-        return ResponseEntity.ok(messages);
+//        String token = authHeader.substring(7);
+        String username = JWTUtil.parseJWT(authHeader.substring(7));
+//        LoggerFactory.getLogger(this.getClass()).info(STR."User \{username} requested messages");
+//        List<MessageDTO> messages = messageMapper.getPersonalMessage(username);
+        return ResponseEntity.ok(messageMapper.getPersonalMessage(username));
     }
 
 /*    @GetMapping("/per/towards")
@@ -50,13 +47,13 @@ public class MessageController {
         Integer rid = userMapper.getUidByUsername(messageDTO.getReceiver());
         Message message = new Message(null, sid, rid, messageDTO.getContent(), null, 1);
         if (messageMapper.insert(message) > 0) {
-            LoggerFactory.getLogger(this.getClass()).info(STR."Message sent from \{messageDTO.getSender()} to \{messageDTO.getReceiver()}");
+//            LoggerFactory.getLogger(this.getClass()).info(STR."Message sent from \{messageDTO.getSender()} to \{messageDTO.getReceiver()}");
             if (SocketHandler.isUserOnline(messageDTO.getReceiver())) {
-                SocketHandler.sendMessageToUser(messageDTO.getReceiver(), messageDTO.getContent());
+                SocketHandler.sendMessageToUser(messageDTO);
             }
             return ResponseEntity.ok("Message sent");
         } else {
-            LoggerFactory.getLogger(this.getClass()).info("Message failed");
+//            LoggerFactory.getLogger(this.getClass()).info("Message failed");
             return ResponseEntity.ok("Message failed");
         }
     }

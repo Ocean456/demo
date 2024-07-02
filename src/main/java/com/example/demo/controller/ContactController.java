@@ -6,7 +6,6 @@ import com.example.demo.mapper.ContactMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.util.JWTUtil;
 import jakarta.annotation.Resource;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,24 +25,26 @@ public class ContactController {
 
     /**
      * 从授权头部获取用户ID
+     *
      * @param authHeader 授权头部
      * @return 用户ID
      */
     private int getUidFromAuthHeader(String authHeader) {
-        String token;
-        try {
-            token = authHeader.substring(7);
-        }catch (StringIndexOutOfBoundsException e){
-            LoggerFactory.getLogger(this.getClass()).info("Invalid token");
-            return 0;
-        }
-        String self = JWTUtil.parseJWT(token);
-        return userMapper.getUidByUsername(self);
+//        String token;
+//        try {
+        String token = authHeader.substring(7);
+//        } catch (StringIndexOutOfBoundsException e){
+//            LoggerFactory.getLogger(this.getClass()).info("Invalid token");
+//            return 0;
+//        }
+//        String self = JWTUtil.parseJWT(token);
+        return userMapper.getUidByUsername(JWTUtil.parseJWT(token));
     }
 
     /**
      * 验证用户
-     * @param uid 用户ID
+     *
+     * @param uid      用户ID
      * @param username 用户名
      * @return 响应实体
      */
@@ -60,20 +61,22 @@ public class ContactController {
 
     /**
      * 获取联系人
+     *
      * @param authHeader 授权头部
      * @return 联系人列表
      */
     @GetMapping("/personal")
     public ResponseEntity<List<ContactDTO>> getContact(@RequestHeader("Authorization") String authHeader) {
         int uid = getUidFromAuthHeader(authHeader);
-        List<ContactDTO> contacts = contactMapper.getContactByUid(uid);
-        LoggerFactory.getLogger(this.getClass()).info("User {} requested contacts", uid);
-        return ResponseEntity.ok(contacts);
+//        List<ContactDTO> contacts = contactMapper.getContactByUid(uid);
+//        LoggerFactory.getLogger(this.getClass()).info("User {} requested contacts", uid);
+        return ResponseEntity.ok(contactMapper.getContactByUid(uid));
     }
 
     /**
      * 添加联系人
-     * @param username 用户名
+     *
+     * @param username   用户名
      * @param authHeader 授权头部
      * @return 响应实体
      */
@@ -81,7 +84,7 @@ public class ContactController {
     public ResponseEntity<?> addContact(@RequestParam String username, @RequestHeader("Authorization") String authHeader) {
         int uid = getUidFromAuthHeader(authHeader);
         int fid = userMapper.getUidByUsername(username);
-        if (uid == 0 || uid == fid) {
+        if (uid == 0 /*|| uid == fid*/) {
             return ResponseEntity.badRequest().body("Invalid request");
         }
         ResponseEntity<?> response = validateUser(uid, username);
@@ -102,7 +105,8 @@ public class ContactController {
 
     /**
      * 删除联系人
-     * @param username 用户名
+     *
+     * @param username   用户名
      * @param authHeader 授权头部
      * @return 响应实体
      */
