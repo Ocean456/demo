@@ -23,31 +23,24 @@ public class UserInfoController {
 
     @GetMapping("/personal")
     public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        String username = JWTUtil.parseJWT(token);
-        Integer uid = userMapper.getUidByUsername(username);
-        QueryWrapper<UserInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("uid", uid);
-        UserInfo userInfo = userInfoMapper.selectOne(queryWrapper);
+        Integer uid = getUidFromToken(authHeader);
+        UserInfo userInfo = userInfoMapper.selectOne(new QueryWrapper<UserInfo>().eq("uid", uid));
         return ResponseEntity.ok(userInfo);
     }
 
     @PostMapping("/modify")
-    public ResponseEntity<?> modifyUserInfo(@RequestHeader("Authorization") String authHeader, UserInfoDTO userInfo) {
-        String token = authHeader.substring(7);
-        String username = JWTUtil.parseJWT(token);
-        Integer uid = userMapper.getUidByUsername(username);
-        UserInfo info = new UserInfo();
-        info.setUid(uid);
-        BeanUtils.copyProperties(userInfo, info);
-        QueryWrapper<UserInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("uid", uid);
-        if (userInfoMapper.update(info, queryWrapper) > 0) {
-            return ResponseEntity.ok().body("Modify success");
-        } else {
-            return ResponseEntity.badRequest().body("Modify failed");
-        }
+    public ResponseEntity<?> modifyUserInfo(@RequestHeader("Authorization") String authHeader, UserInfoDTO userInfoDTO) {
+        Integer uid = getUidFromToken(authHeader);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUid(uid);
+        BeanUtils.copyProperties(userInfoDTO, userInfo);
+        boolean isUpdated = userInfoMapper.update(userInfo, new QueryWrapper<UserInfo>().eq("uid", uid)) > 0;
+        return isUpdated ? ResponseEntity.ok().body("Modify success") : ResponseEntity.badRequest().body("Modify failed");
     }
 
-
+    private Integer getUidFromToken(String authHeader) {
+        String token = authHeader.substring(7);
+        String username = JWTUtil.parseJWT(token);
+        return userMapper.getUidByUsername(username);
+    }
 }

@@ -31,19 +31,30 @@ public class UserController {
     @Resource
     RedisUtil redisUtil;
 
-
+    /**
+     * 用户登录
+     * @param loginForm 登录表单数据传输对象
+     * @return 如果登录成功，返回带有授权头的响应实体，否则返回未授权的响应实体
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginFormDTO loginForm) {
         if (userService.userLogin(loginForm)) {
             String token = JWTUtil.createJWT(loginForm.username);
             redisUtil.set(token, loginForm.username);
             UserDTO userDTO = new UserDTO(loginForm.username);
-            return ResponseEntity.ok().header("Authorization", STR."Bearer \{token}").body(userDTO);
+            return ResponseEntity.ok()
+                .header("Authorization", STR."Bearer \{token}")
+                .body(userDTO);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
         }
     }
 
+    /**
+     * 用户注册
+     * @param loginForm 注册表单数据传输对象
+     * @return 如果注册成功，返回带有成功消息的响应实体，否则返回带有失败消息的响应实体
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody LoginFormDTO loginForm) {
         if (userService.userRegister(loginForm)) {

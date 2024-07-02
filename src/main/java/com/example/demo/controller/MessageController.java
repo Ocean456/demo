@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.MessageDTO;
 import com.example.demo.entity.Message;
+import com.example.demo.handle.SocketHandler;
 import com.example.demo.mapper.MessageMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.util.JWTUtil;
@@ -26,7 +27,6 @@ public class MessageController {
     UserMapper userMapper;
 
 
-
     @GetMapping("/personal")
     public ResponseEntity<?> getMessage(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
@@ -36,6 +36,13 @@ public class MessageController {
         return ResponseEntity.ok(messages);
     }
 
+/*    @GetMapping("/per/towards")
+    public ResponseEntity<?> getMessageToward(@RequestParam String username,@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String per = JWTUtil.parseJWT(token);
+    }*/
+
+
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestBody MessageDTO messageDTO/*,@RequestHeader("Authorization") String authHeader*/) {
         // Integer sid = userMapper.getUidByUsername(JWTUtil.parseJWT(authHeader.substring(7)));
@@ -44,11 +51,15 @@ public class MessageController {
         Message message = new Message(null, sid, rid, messageDTO.getContent(), null, 1);
         if (messageMapper.insert(message) > 0) {
             LoggerFactory.getLogger(this.getClass()).info(STR."Message sent from \{messageDTO.getSender()} to \{messageDTO.getReceiver()}");
+            if (SocketHandler.isUserOnline(messageDTO.getReceiver())) {
+                SocketHandler.sendMessageToUser(messageDTO.getReceiver(), messageDTO.getContent());
+            }
             return ResponseEntity.ok("Message sent");
         } else {
             LoggerFactory.getLogger(this.getClass()).info("Message failed");
             return ResponseEntity.ok("Message failed");
         }
     }
+
 
 }
