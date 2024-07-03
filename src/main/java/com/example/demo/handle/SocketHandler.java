@@ -27,11 +27,11 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
         String token = Objects.requireNonNull(session.getUri()).getQuery().split("=")[1];
-        logger.info(STR."Token: \{token}");
+//        logger.info(STR."Token: \{token}");
         String username = JWTUtil.parseJWT(token);
         if (username != null) {
             sessionMap.put(username, session);
-            logger.info(STR."Session established: \{session.getId()}");
+//            logger.info(STR."Session established: \{session.getId()}");
         } else {
             session.close();
         }
@@ -42,7 +42,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
         sessionMap.put(session.getId(), session);
 //        session.sendMessage(new TextMessage(session.getId()));
-        logger.info(STR."Session established: \{session.getId()}");
+//        logger.info(STR."Session established: \{session.getId()}");
 
     }
 
