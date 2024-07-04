@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageDTO {
+//    public String mid;
     public String sender;
     public String receiver;
     public String content;

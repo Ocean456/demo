@@ -47,7 +47,7 @@ public class UserInfoController {
      * @return 修改成功或失败的消息
      */
     @PostMapping("/modify")
-    public ResponseEntity<?> modifyUserInfo(@RequestHeader("Authorization") String authHeader, UserInfoDTO userInfoDTO) {
+    public ResponseEntity<?> modifyUserInfo(@RequestHeader("Authorization") String authHeader,@RequestBody UserInfoDTO userInfoDTO) {
         Integer uid = getUidFromToken(authHeader);
         UserInfo userInfo = new UserInfo();
         userInfo.setUid(uid);

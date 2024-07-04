@@ -75,7 +75,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) {
-        logger.error(STR."Error in session: \{session.getId()}");
+//        logger.error(STR."Error in session: \{session.getId()}");
     }
 
     public static void sendMessageToUser(MessageDTO messageDTO) {
@@ -86,7 +86,7 @@ public class SocketHandler extends TextWebSocketHandler {
                 String message = mapper.writeValueAsString(messageDTO);
                 receiverSession.sendMessage(new TextMessage(message));
             } catch (Exception e) {
-                logger.error(STR."Error in sending message to receiver: \{messageDTO.receiver}");
+//                logger.error(STR."Error in sending message to receiver: \{messageDTO.receiver}");
             }
         }
     }

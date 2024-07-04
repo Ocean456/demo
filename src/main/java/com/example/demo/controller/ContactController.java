@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ContactDTO;
+import com.example.demo.dto.UserInfoDTO;
 import com.example.demo.entity.Contact;
 import com.example.demo.mapper.ContactMapper;
 import com.example.demo.mapper.UserMapper;
@@ -40,6 +41,7 @@ public class ContactController {
 //        String self = JWTUtil.parseJWT(token);
         return userMapper.getUidByUsername(JWTUtil.parseJWT(token));
     }
+
 
     /**
      * 验证用户
@@ -124,5 +126,10 @@ public class ContactController {
         }
 
         return ResponseEntity.ok("Contact deleted");
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<UserInfoDTO>> searchContact(@RequestParam String username) {
+        return ResponseEntity.ok(userMapper.searchUser(username));
     }
 }
