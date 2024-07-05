@@ -12,7 +12,7 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<User> {
 
     @Select("select uid from user where username = #{username}")
-    int getUidByUsername(String username);
+    Integer getUidByUsername(String username);
 
     @Select("select username from user where uid = #{uid}")
     String getUsernameByUid(int uid);

@@ -20,6 +20,7 @@ public class UserService {
     @Resource
     UserMapper userMapper;
 
+
     /**
      * 用户登录
      * @param loginForm 登录表单数据传输对象
@@ -44,4 +45,5 @@ public class UserService {
         user.setPassword(HashUtil.hashPassword(loginForm.getPassword()));
         return userMapper.insert(user) > 0;
     }
+
 }

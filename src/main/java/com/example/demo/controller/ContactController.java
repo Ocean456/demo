@@ -7,6 +7,7 @@ import com.example.demo.mapper.ContactMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.util.JWTUtil;
 import jakarta.annotation.Resource;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,10 +83,13 @@ public class ContactController {
      * @param authHeader 授权头部
      * @return 响应实体
      */
-    @PostMapping("/add")
+    @GetMapping("/add")
     public ResponseEntity<?> addContact(@RequestParam String username, @RequestHeader("Authorization") String authHeader) {
+        System.out.println(username);
         int uid = getUidFromAuthHeader(authHeader);
-        int fid = userMapper.getUidByUsername(username);
+        Integer fid = userMapper.getUidByUsername(username);
+        System.out.println(fid);
+        LoggerFactory.getLogger(this.getClass()).info("User {} requested to add contact {}", fid, username);
         if (uid == 0 /*|| uid == fid*/) {
             return ResponseEntity.badRequest().body("Invalid request");
         }
@@ -93,7 +97,7 @@ public class ContactController {
         if (response != null) return response;
 
         // check if contact already exists
-        if (contactMapper.getContactByUidAndFid(uid, fid) == 1) {
+        if (contactMapper.getContactByUidAndFid(uid, fid) == 1 && contactMapper.getContactByUidAndFid(fid, uid) == 1) {
             return ResponseEntity.badRequest().body("Contact already exists");
         }
 

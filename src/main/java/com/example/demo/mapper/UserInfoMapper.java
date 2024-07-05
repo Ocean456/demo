@@ -9,4 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
     @Insert("insert into userinfo (uid, phone, email, avatar, nickname, region) values (#{uid}, NULL, NULL, NULL, NULL, NULL)")
     boolean initializeUserInfo(int uid);
+
+    @Insert("insert into userinfo (uid, avatar, email) values (#{uid}, #{avatar}, #{email})")
+    boolean initUserInfo(Integer uid, String avatar,String email);
 }
