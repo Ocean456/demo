@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 
 @Component
-public class JWTUtil {
+public class JWTUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(JWTUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(JWTUtils.class);
 
 
     private static String SECRET_KEY;

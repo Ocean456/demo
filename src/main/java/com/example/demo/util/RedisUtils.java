@@ -5,14 +5,14 @@ import org.springframework.stereotype.Component;
 
 @SuppressWarnings("rawtypes")
 @Component
-public class RedisUtil {
+public class RedisUtils {
 
 //    @Resource
 //    private RedisTemplate redisTemplate;
 
     private final RedisTemplate redisTemplate;
 
-    public RedisUtil(RedisTemplate redisTemplate) {
+    public RedisUtils(RedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

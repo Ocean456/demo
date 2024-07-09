@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+    app:
+        build: .
+        container_name: app
+        ports:
+            - "1010:1010"
+        depends_on:
+            - mysql
+            - redis
+        environment:
+            - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/demo
+            - SPRING_DATASOURCE_USERNAME=root
+            - SPRING_DATASOURCE_PASSWORD=1234
+            - SPRING_REDIS_HOST=redis
+            - SPRING_REDIS_PORT=6379
+
+    mysql:
+        image: mysql:8.0
+        container_name: mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=1234
+            - MYSQL_DATABASE=demo
+        ports:
+            - "3306:3306"
+        volumes:
+            - mysql_data:/var/lib/mysql
+            - ./init:/docker-entrypoint-initdb.d
+
+    redis:
+        image: redis:latest
+        restart: always
+        container_name: redis
+        environment:
+            - REDIS_PORT=6379
+            - REDIS_HOST=redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+
+volumes:
+    mysql_data:
+        driver: local
+    redis_data:
+        driver: local

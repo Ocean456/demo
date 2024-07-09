@@ -5,7 +5,7 @@ import com.example.demo.entity.Message;
 import com.example.demo.handle.SocketHandler;
 import com.example.demo.mapper.MessageMapper;
 import com.example.demo.mapper.UserMapper;
-import com.example.demo.util.JWTUtil;
+import com.example.demo.util.JWTUtils;
 import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ public class MessageController {
     @GetMapping("/personal")
     public ResponseEntity<?> getMessage(@RequestHeader("Authorization") String authHeader) {
 //        String token = authHeader.substring(7);
-        String username = JWTUtil.parseJWT(authHeader.substring(7));
+        String username = JWTUtils.parseJWT(authHeader.substring(7));
 //        LoggerFactory.getLogger(this.getClass()).info(STR."User \{username} requested messages");
 //        List<MessageDTO> messages = messageMapper.getPersonalMessage(username);
         return ResponseEntity.ok(messageMapper.getPersonalMessage(username));

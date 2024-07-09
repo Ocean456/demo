@@ -5,9 +5,8 @@ import com.example.demo.dto.UserInfoDTO;
 import com.example.demo.entity.Contact;
 import com.example.demo.mapper.ContactMapper;
 import com.example.demo.mapper.UserMapper;
-import com.example.demo.util.JWTUtil;
+import com.example.demo.util.JWTUtils;
 import jakarta.annotation.Resource;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,15 +31,14 @@ public class ContactController {
      * @return 用户ID
      */
     private int getUidFromAuthHeader(String authHeader) {
-//        String token;
-//        try {
-        String token = authHeader.substring(7);
-//        } catch (StringIndexOutOfBoundsException e){
+        String token;
+        try {
+            token = authHeader.substring(7);
+        } catch (StringIndexOutOfBoundsException e) {
 //            LoggerFactory.getLogger(this.getClass()).info("Invalid token");
-//            return 0;
-//        }
-//        String self = JWTUtil.parseJWT(token);
-        return userMapper.getUidByUsername(JWTUtil.parseJWT(token));
+            return 0;
+        }
+        return userMapper.getUidByUsername(JWTUtils.parseJWT(token));
     }
 
 
@@ -85,14 +83,11 @@ public class ContactController {
      */
     @GetMapping("/add")
     public ResponseEntity<?> addContact(@RequestParam String username, @RequestHeader("Authorization") String authHeader) {
-        System.out.println(username);
         int uid = getUidFromAuthHeader(authHeader);
-        Integer fid = userMapper.getUidByUsername(username);
-        System.out.println(fid);
-        LoggerFactory.getLogger(this.getClass()).info("User {} requested to add contact {}", fid, username);
-        if (uid == 0 /*|| uid == fid*/) {
+        int fid = userMapper.getUidByUsername(username);
+/*        if (uid == 0) {
             return ResponseEntity.badRequest().body("Invalid request");
-        }
+        }*/
         ResponseEntity<?> response = validateUser(uid, username);
         if (response != null) return response;
 
@@ -101,12 +96,21 @@ public class ContactController {
             return ResponseEntity.badRequest().body("Contact already exists");
         }
 
-        Contact contact = new Contact();
-        contact.setUid(uid);
-        contact.setClassify("朋友");
-        contact.setFid(fid);
-        contactMapper.insert(contact);
+        addContactInBothDirections(uid, fid);
         return ResponseEntity.ok("Contact added");
+    }
+
+    private void addContactInBothDirections(int uid, int fid) {
+        Contact contact1 = new Contact();
+        contact1.uid = uid;
+        contact1.fid = fid;
+        contact1.classify = "default";
+        contactMapper.insert(contact1);
+        Contact contact2 = new Contact();
+        contact2.uid = fid;
+        contact2.fid = uid;
+        contact2.classify = "default";
+        contactMapper.insert(contact2);
     }
 
     /**
@@ -136,4 +140,6 @@ public class ContactController {
     public ResponseEntity<List<UserInfoDTO>> searchContact(@RequestParam String username) {
         return ResponseEntity.ok(userMapper.searchUser(username));
     }
+
+
 }

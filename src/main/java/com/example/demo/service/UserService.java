@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.demo.dto.LoginFormDTO;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
-import com.example.demo.util.HashUtil;
+import com.example.demo.util.HashUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class UserService {
      */
     public boolean userLogin(LoginFormDTO loginForm) {
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("username", loginForm.getUsername()));
-        return user != null && HashUtil.verifyPassword(loginForm.password, user.getPassword());
+        return user != null && HashUtils.verifyPassword(loginForm.password, user.getPassword());
     }
 
     /**
@@ -42,7 +42,7 @@ public class UserService {
         }
         User user = new User();
         user.setUsername(loginForm.getUsername());
-        user.setPassword(HashUtil.hashPassword(loginForm.getPassword()));
+        user.setPassword(HashUtils.hashPassword(loginForm.getPassword()));
         return userMapper.insert(user) > 0;
     }
 

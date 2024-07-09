@@ -1,6 +1,6 @@
 package com.example.demo.interceptor;
 
-import com.example.demo.util.JWTUtil;
+import com.example.demo.util.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
@@ -18,7 +18,7 @@ public class JWTInterceptor implements HandlerInterceptor {
         String authHeader = request.getHeader(AUTH_HEADER);
         if (authHeader != null && authHeader.startsWith(TOKEN_PREFIX)) {
             String token = authHeader.substring(TOKEN_PREFIX.length());
-            return JWTUtil.validateJWT(token);
+            return JWTUtils.validateJWT(token);
         }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return false;

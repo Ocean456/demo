@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MailUtil {
+public class MailUtils {
 
     @Resource
     private JavaMailSender mailSender;

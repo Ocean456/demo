@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-public class RedisUtilTest {
+public class RedisUtilsTest {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;

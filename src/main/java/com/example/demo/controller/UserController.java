@@ -6,9 +6,9 @@ import com.example.demo.dto.UserDTO;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.UserInfoService;
 import com.example.demo.service.UserService;
-import com.example.demo.util.JWTUtil;
-import com.example.demo.util.MailUtil;
-import com.example.demo.util.RedisUtil;
+import com.example.demo.util.JWTUtils;
+import com.example.demo.util.MailUtils;
+import com.example.demo.util.RedisUtils;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +28,10 @@ public class UserController {
     UserMapper userMapper;
 
     @Resource
-    RedisUtil redisUtil;
+    RedisUtils redisUtils;
 
     @Resource
-    MailUtil mailUtil;
+    MailUtils mailUtils;
 
     /**
      * 用户登录
@@ -42,8 +42,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginFormDTO loginForm) {
         if (userService.userLogin(loginForm)) {
-            String token = JWTUtil.createJWT(loginForm.username);
-            redisUtil.set(token, loginForm.username);
+            String token = JWTUtils.createJWT(loginForm.username);
+            redisUtils.set(token, loginForm.username);
             UserDTO userDTO = new UserDTO(loginForm.username);
             return ResponseEntity.ok()
                     .header("Authorization", STR."Bearer \{token}")
@@ -77,7 +77,7 @@ public class UserController {
          * */
 
 
-        if (registerDTO.code.equals(redisUtil.get(registerDTO.email))) {
+        if (registerDTO.code.equals(redisUtils.get(registerDTO.email))) {
 /*            Integer uid = userMapper.getUidByUsername(registerDTO.username);
             if (uid != null) {
                 return ResponseEntity.badRequest().body("Username already exists");
@@ -101,8 +101,8 @@ public class UserController {
     @GetMapping("/code")
     public ResponseEntity<?> getCode(@RequestParam String email) {
         String code = String.valueOf((int) ((Math.random() * 9 + 1) * 100000));
-        mailUtil.sendMail(email, "注册验证码", code);
-        redisUtil.set(email, code);
+        mailUtils.sendMail(email, "注册验证码", code);
+        redisUtils.set(email, code);
         return ResponseEntity.ok().body("Code sent");
     }
 

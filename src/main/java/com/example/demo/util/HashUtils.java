@@ -3,7 +3,7 @@ package com.example.demo.util;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
-public class HashUtil {
+public class HashUtils {
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public static String hashPassword(String password) {

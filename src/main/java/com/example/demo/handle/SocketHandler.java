@@ -1,7 +1,7 @@
 package com.example.demo.handle;
 
 import com.example.demo.dto.MessageDTO;
-import com.example.demo.util.JWTUtil;
+import com.example.demo.util.JWTUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class SocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
         String token = Objects.requireNonNull(session.getUri()).getQuery().split("=")[1];
 //        logger.info(STR."Token: \{token}");
-        String username = JWTUtil.parseJWT(token);
+        String username = JWTUtils.parseJWT(token);
         if (username != null) {
             sessionMap.put(username, session);
 //            logger.info(STR."Session established: \{session.getId()}");

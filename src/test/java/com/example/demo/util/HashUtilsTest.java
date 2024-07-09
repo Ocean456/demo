@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HashUtilTest {
+class HashUtilsTest {
 
     @Test
     void hashPassword() {
         String password = "123456";
-        String hashedPassword= HashUtil.hashPassword(password);
+        String hashedPassword= HashUtils.hashPassword(password);
         System.out.println(hashedPassword);
 
         assertNotNull(hashedPassword);
@@ -19,9 +19,9 @@ class HashUtilTest {
     @Test
     void verifyPassword() {
         String password = "123456";
-        String hashedPassword= HashUtil.hashPassword(password);
+        String hashedPassword= HashUtils.hashPassword(password);
 
-        assertTrue(HashUtil.verifyPassword(password, hashedPassword));
-        assertFalse(HashUtil.verifyPassword("1234567", hashedPassword));
+        assertTrue(HashUtils.verifyPassword(password, hashedPassword));
+        assertFalse(HashUtils.verifyPassword("1234567", hashedPassword));
     }
 }
