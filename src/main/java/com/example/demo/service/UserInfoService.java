@@ -14,5 +14,4 @@ public class UserInfoService {
         return userInfoMapper.initUserInfo(uid, defaultAvatar, email);
     }
 
-
 }

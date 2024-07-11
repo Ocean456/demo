@@ -35,6 +35,7 @@ public class UserInfoController {
 
     /**
      * 获取用户信息
+     *
      * @param authHeader 授权头部，包含用户的JWT
      * @return 用户信息
      */
@@ -50,12 +51,13 @@ public class UserInfoController {
 
     /**
      * 修改用户信息
-     * @param authHeader 授权头部，包含用户的JWT
+     *
+     * @param authHeader  授权头部，包含用户的JWT
      * @param userInfoDTO 用户信息数据传输对象
      * @return 修改成功或失败的消息
      */
     @PostMapping("/modify")
-    public ResponseEntity<?> modifyUserInfo(@RequestHeader("Authorization") String authHeader,@RequestBody UserInfoDTO userInfoDTO) {
+    public ResponseEntity<?> modifyUserInfo(@RequestHeader("Authorization") String authHeader, @RequestBody UserInfoDTO userInfoDTO) {
         Integer uid = getUidFromToken(authHeader);
         UserInfo userInfo = new UserInfo();
         userInfo.setUid(uid);
@@ -66,6 +68,7 @@ public class UserInfoController {
 
     /**
      * 从令牌中获取用户ID
+     *
      * @param authHeader 授权头部，包含用户的JWT
      * @return 用户ID
      */
@@ -77,6 +80,9 @@ public class UserInfoController {
 
     @PostMapping("/avatar")
     public ResponseEntity<?> modifyAvatar(@RequestHeader("Authorization") String authHeader, @RequestParam("file") MultipartFile file) throws IOException {
+        /*
+         * 考虑简化结构
+         */
         Integer uid = getUidFromToken(authHeader);
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null) {

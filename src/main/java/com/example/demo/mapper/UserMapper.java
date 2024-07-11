@@ -14,9 +14,12 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select uid from user where username = #{username}")
     Integer getUidByUsername(String username);
 
-    @Select("select username from user where uid = #{uid}")
-    String getUsernameByUid(int uid);
+/*    @Select("select username from user where uid = #{uid}")
+    String getUsernameByUid(int uid);*/
 
     @Select("select * from user_view where username = #{username}")
     List<UserInfoDTO> searchUser(String username);
+
+    @Select("select * from user where username = #{username}")
+    User getUserByUsername(String username);
 }

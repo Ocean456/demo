@@ -56,32 +56,24 @@ public class UserController {
     /**
      * 用户注册
      *
-     * @param  registerDTO 注册表单数据传输对象
+     * @param registerDTO 注册表单数据传输对象
      * @return 如果注册成功，返回带有成功消息的响应实体，否则返回带有失败消息的响应实体
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(/*@RequestBody LoginFormDTO loginForm*/@RequestBody RegisterDTO registerDTO) {
-        /*if (userService.userRegister(loginForm)) {
-            int uid = userMapper.getUidByUsername(loginForm.username);
-            if (userInfoMapper.initializeUserInfo(uid)) {
-                return ResponseEntity.ok().body("Register success");
-            }
-            return ResponseEntity.badRequest().body("Register failed + Initialize failed");
-
-        } else {
-            return ResponseEntity.badRequest().body("Register failed");
-        }*/
-
         /*
          * 考虑邮箱重复注册的情况
-         * */
+         * 考虑用户名自动生成功能
+         */
+
+        String username = registerDTO.username;
+        if (userMapper.getUserByUsername(username) != null) {
+            return ResponseEntity.badRequest().body("Username already exists");
+        }
 
 
         if (registerDTO.code.equals(redisUtils.get(registerDTO.email))) {
-/*            Integer uid = userMapper.getUidByUsername(registerDTO.username);
-            if (uid != null) {
-                return ResponseEntity.badRequest().body("Username already exists");
-            }*/
+
             if (userService.userRegister(registerDTO)) {
                 int uid = userMapper.getUidByUsername(registerDTO.username);
                 if (userInfoService.initUserInfo(uid, registerDTO.email)) {
@@ -105,6 +97,4 @@ public class UserController {
         redisUtils.set(email, code);
         return ResponseEntity.ok().body("Code sent");
     }
-
-
 }

@@ -85,13 +85,9 @@ public class ContactController {
     public ResponseEntity<?> addContact(@RequestParam String username, @RequestHeader("Authorization") String authHeader) {
         int uid = getUidFromAuthHeader(authHeader);
         int fid = userMapper.getUidByUsername(username);
-/*        if (uid == 0) {
-            return ResponseEntity.badRequest().body("Invalid request");
-        }*/
         ResponseEntity<?> response = validateUser(uid, username);
         if (response != null) return response;
 
-        // check if contact already exists
         if (contactMapper.getContactByUidAndFid(uid, fid) == 1 && contactMapper.getContactByUidAndFid(fid, uid) == 1) {
             return ResponseEntity.badRequest().body("Contact already exists");
         }
