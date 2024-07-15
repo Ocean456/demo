@@ -37,13 +37,26 @@ public class UserService {
      * @return 如果用户名不存在并且用户成功注册，返回true，否则返回false
      */
     public boolean userRegister(LoginFormDTO loginForm) {
-        if (userMapper.selectOne(new QueryWrapper<User>().eq("username", loginForm.getUsername())) != null) {
-            return false;
-        }
         User user = new User();
         user.setUsername(loginForm.getUsername());
         user.setPassword(HashUtils.hashPassword(loginForm.getPassword()));
         return userMapper.insert(user) > 0;
+    }
+
+    public String generateUniqueUsername() {
+        String username;
+        do {
+            username = generateRandomNumericString(11);
+        } while (userMapper.getUserByUsername(username) != null);
+        return username;
+    }
+
+    public String generateRandomNumericString(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((int) (Math.random() * 10));
+        }
+        return sb.toString();
     }
 
 }

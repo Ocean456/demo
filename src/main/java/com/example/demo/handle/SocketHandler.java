@@ -27,44 +27,21 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
         String token = Objects.requireNonNull(session.getUri()).getQuery().split("=")[1];
-//        logger.info(STR."Token: \{token}");
         String username = JWTUtils.parseJWT(token);
         if (username != null) {
             sessionMap.put(username, session);
-//            logger.info(STR."Session established: \{session.getId()}");
         } else {
             session.close();
         }
 
-/*        for (Map.Entry<String, WebSocketSession> sessionEntry : sessionMap.entrySet()) {
-            logger.info(STR."Session: \{sessionEntry.getKey()} \{sessionEntry.getValue().getId()}");
-        }*/
 
         sessionMap.put(session.getId(), session);
-//        session.sendMessage(new TextMessage(session.getId()));
-//        logger.info(STR."Session established: \{session.getId()}");
 
     }
 
     @Override
     protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
-        // logger.info("Session: " + session.getId() + " Message: " + message.getPayload());
 
-        /*JsonObject jsonObject = JsonParser.parseString(message.getPayload()).getAsJsonObject();
-
-        String receiver = jsonObject.get("receiver").getAsString();
-        String content = jsonObject.get("content").getAsString();
-
-
-        // send message to receiver
-        WebSocketSession receiverSession = sessionMap.get(receiver);
-        if (receiverSession != null && receiverSession.isOpen()) {
-            try {
-                receiverSession.sendMessage(new TextMessage(content));
-            } catch (IOException e) {
-                logger.error("Error in sending message to receiver: " + receiver);
-            }
-        }*/
     }
 
     @Override
@@ -74,9 +51,7 @@ public class SocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) {
-//        logger.error(STR."Error in session: \{session.getId()}");
-    }
+    public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) {}
 
     public static void sendMessageToUser(MessageDTO messageDTO) {
         WebSocketSession receiverSession = sessionMap.get(messageDTO.getReceiver());

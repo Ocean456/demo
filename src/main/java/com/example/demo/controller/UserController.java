@@ -43,7 +43,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginFormDTO loginForm) {
         if (userService.userLogin(loginForm)) {
             String token = JWTUtils.createJWT(loginForm.username);
-            redisUtils.set(token, loginForm.username);
+//            redisUtils.set(token, loginForm.username);
             UserDTO userDTO = new UserDTO(loginForm.username);
             return ResponseEntity.ok()
                     .header("Authorization", STR."Bearer \{token}")
@@ -61,32 +61,24 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(/*@RequestBody LoginFormDTO loginForm*/@RequestBody RegisterDTO registerDTO) {
-        /*
-         * 考虑邮箱重复注册的情况
-         * 考虑用户名自动生成功能
-         */
 
-        String username = registerDTO.username;
-        if (userMapper.getUserByUsername(username) != null) {
-            return ResponseEntity.badRequest().body("Username already exists");
+        registerDTO.username = userService.generateUniqueUsername();
+
+        if (!registerDTO.code.equals(redisUtils.get(registerDTO.email))) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Code error");
         }
 
-
-        if (registerDTO.code.equals(redisUtils.get(registerDTO.email))) {
-
-            if (userService.userRegister(registerDTO)) {
-                int uid = userMapper.getUidByUsername(registerDTO.username);
-                if (userInfoService.initUserInfo(uid, registerDTO.email)) {
-                    return ResponseEntity.ok().body("Register success");
-                }
-                return ResponseEntity.badRequest().body("Register failed + Initialize failed");
-            } else {
-                return ResponseEntity.badRequest().body("Register failed");
-            }
-        } else {
-            return ResponseEntity.badRequest().body("Invalid code");
+        if (!userService.userRegister(registerDTO)) {
+            return ResponseEntity.badRequest().body("Register failed");
         }
 
+        int uid = userMapper.getUidByUsername(registerDTO.username);
+
+        if (!userInfoService.initUserInfo(uid, registerDTO.email)) {
+            return ResponseEntity.badRequest().body("Registration successful, but failed to initialize user information");
+        }
+
+        return ResponseEntity.ok().body("Register success");
 
     }
 
